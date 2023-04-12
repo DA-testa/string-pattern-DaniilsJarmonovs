@@ -1,32 +1,56 @@
-# python3
+# Izstrādāja Daniils Jarmonovs, 18. grupa
+from random import randint
 
 def read_input():
-    # this function needs to aquire input both from keyboard and file
-    # as before, use capital i (input from keyboard) and capital f (input from file) to choose which input type will follow
-    
-    
-    # after input type choice
-    # read two lines 
-    # first line is pattern 
-    # second line is text in which to look for pattern 
-    
-    # return both lines in one return
-    
-    # this is the sample return, notice the rstrip function
-    return (input().rstrip(), input().rstrip())
+    inp = input()
+    if("I" in inp):
+        P = input()
+        T = input()
+    elif("F" in inp):
+        FName = "06"
+        with open("./tests/"+FName, mode="r") as file:
+            P = file.readline()
+            T = file.readline()
+    return (P.rstrip(), T.rstrip())
 
 def print_occurrences(output):
-    # this function should control output, it doesn't need any return
     print(' '.join(map(str, output)))
 
+def getHash(s):
+    global b
+    mult = 1
+    hashcode = 0
+    for i in range(len(s)-1, -1, -1):
+        hashcode += ord(s[i])*mult
+        mult = mult*b
+    return hashcode
+
+def editHash(p, hashcode, prev):
+    global b, maxmult
+    hashcode -= ord(prev)*maxmult
+    hashcode = b*hashcode+ord(p[-1])
+    return hashcode
+
 def get_occurrences(pattern, text):
-    # this function should find the occurances using Rabin Karp alghoritm 
-
-    # and return an iterable variable
-    return [0]
-
+    global b, maxmult
+    output = []
+    b = randint(1, 20)
+    Plen = len(pattern)
+    Tlen = len(text)
+    maxmult = b**(Plen-1)
+    toFind = getHash(pattern)
+    for i in range(Tlen-Plen+1):
+        p = text[i:i+Plen]
+        if(i==0):
+            patternHash = getHash(p)
+        else:
+            prev = text[i-1]
+            patternHash = editHash(p, patternHash, prev)
+        if(patternHash==toFind):
+            if(p==pattern):
+                output += [i]
+    return output
 
 # this part launches the functions
 if __name__ == '__main__':
     print_occurrences(get_occurrences(*read_input()))
-
