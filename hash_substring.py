@@ -8,7 +8,7 @@ def read_input():
         T = input()
     elif("F" in inp):
         FName = input()
-        with open(FName, mode="r") as file:
+        with open("./tests/"+FName, mode="r") as file:
             P = file.readline()
             T = file.readline()
     return (P.rstrip(), T.rstrip())
